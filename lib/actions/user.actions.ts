@@ -1,6 +1,5 @@
 "use server";
 
-// Import necessary modules and models
 import { FilterQuery, SortOrder } from "mongoose";
 import { revalidatePath } from "next/cache";
 
@@ -14,22 +13,14 @@ export async function fetchUser(userId: string) {
   try {
     connectToDB();
 
-    const user = await User.findOne({ id: userId }).populate({
-      path: 'communities',
+    return await User.findOne({ id: userId }).populate({
+      path: "communities",
       model: Community,
     });
-
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    return user;
-  } catch (error) {
-    console.error(`Failed to fetch user: ${error}`);
-    throw error;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch user: ${error.message}`);
   }
 }
-
 
 interface Params {
   userId: string;
@@ -73,7 +64,7 @@ export async function updateUser({
 
 export async function fetchUserPosts(userId: string) {
   try {
-    await connectToDB();
+    connectToDB();
 
     // Find all threads authored by the user with the given userId
     const threads = await User.findOne({ id: userId }).populate({
