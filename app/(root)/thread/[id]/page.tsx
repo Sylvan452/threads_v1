@@ -9,7 +9,7 @@ import { fetchThreadById } from '@/lib/actions/thread.actions';
 
 export const revalidate = 0;
 
-async function page({ params }: { params: { id: string } }) {
+const page = async ({ params }: { params: { id: string } }) => {
   if (!params.id) return null;
 
   const user = await currentUser();
@@ -36,11 +36,13 @@ async function page({ params }: { params: { id: string } }) {
       </div>
 
       <div className="mt-7">
-        <Comment
-          threadId={params.id}
-          currentUserImg={user.imageUrl}
-          currentUserId={JSON.stringify(userInfo._id)}
-        />
+        {
+          <Comment
+            threadId={params.id}
+            currentUserImg={userInfo.image}
+            currentUserId={JSON.stringify(userInfo._id)}
+          />
+        }
       </div>
 
       <div className="mt-10">
@@ -61,6 +63,6 @@ async function page({ params }: { params: { id: string } }) {
       </div>
     </section>
   );
-}
+};
 
 export default page;

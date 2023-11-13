@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import {
@@ -18,7 +18,7 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 
 import { CommentValidation } from '@/lib/validations/thread';
-//import { addCommentToThread } from '@/lib/actions/thread.actions';
+import { addCommentToThread } from '@/lib/actions/thread.actions';
 
 interface Props {
   threadId: string;
@@ -26,10 +26,11 @@ interface Props {
   currentUserId: string;
 }
 
-function Comment({ threadId, currentUserImg, currentUserId }: Props) {
+const Comment = ({ threadId, currentUserImg, currentUserId }: Props) => {
+  const router = useRouter();
   const pathname = usePathname();
 
-  const form = useForm<z.infer<typeof CommentValidation>>({
+  const form = useForm({
     resolver: zodResolver(CommentValidation),
     defaultValues: {
       thread: '',
@@ -82,6 +83,14 @@ function Comment({ threadId, currentUserImg, currentUserId }: Props) {
       </form>
     </Form>
   );
-}
+};
 
 export default Comment;
+// function addCommentToThread(
+//   threadId: string,
+//   thread: string,
+//   arg2: any,
+//   pathname: string,
+// ) {
+//   throw new Error('Function not implemented.');
+// }
