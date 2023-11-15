@@ -1,18 +1,25 @@
+import Image from 'next/image';
 import { currentUser } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { fetchUser } from '@/lib/actions/user.actions';
-import ProfileHeader from '@/components/shared/ProfileHeader';
-import { Tabs, TabsList, TabsContent, TabsTrigger } from '@/components/ui/tabs';
+
 import { profileTabs } from '@/constants';
-import Image from 'next/image';
+
 import ThreadsTab from '@/components/shared/ThreadsTab';
+import ProfileHeader from '@/components/shared/ProfileHeader';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+import { fetchUser } from '@/lib/actions/user.actions';
 
 async function Page({ params }: { params: { id: string } }) {
   const user = await currentUser();
   if (!user) return null;
 
   const userInfo = await fetchUser(params.id);
-  if (!userInfo?.onboarded) redirect('/onboarding');
+  if (!userInfo?.onboarded) {
+    await redirect('/onboarding');
+    return null;
+  }
+
   return (
     <section>
       <ProfileHeader
@@ -40,7 +47,7 @@ async function Page({ params }: { params: { id: string } }) {
 
                 {tab.label === 'Threads' && (
                   <p className="ml-1 rounded-sm bg-light-4 px-2 py-1 !text-tiny-medium text-light-2">
-                    {userInfo?.threads?.lenght}
+                    {userInfo.threads.length}
                   </p>
                 )}
               </TabsTrigger>
@@ -52,6 +59,7 @@ async function Page({ params }: { params: { id: string } }) {
               value={tab.value}
               className="w-full text-light-1"
             >
+              {/* @ts-ignore */}
               <ThreadsTab
                 currentUserId={user.id}
                 accountId={userInfo.id}
@@ -64,5 +72,4 @@ async function Page({ params }: { params: { id: string } }) {
     </section>
   );
 }
-
 export default Page;

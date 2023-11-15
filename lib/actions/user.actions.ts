@@ -162,7 +162,7 @@ export async function getActivity(userId: string) {
 
     // Collect all the child thread ids (replies) from the 'children' field of each user thread
     const childThreadIds = userThreads.reduce((acc, userThread) => {
-      return acc.concat(userThread.children);
+      return acc.concat(userThread.children)
     }, []);
 
     // Find and return the child threads (replies) excluding the ones created by the same user
